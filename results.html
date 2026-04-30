@@ -1,0 +1,388 @@
+<!--Jose Manuel Vazquez Teles - 23136498
+Cyber Essentials Toolkit for SMEs - Results page-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Results</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body onload="loadChecklist()">
+
+
+
+
+
+<!-- Navigation Bar-->
+
+
+
+<div class="navbar">
+    <h2>Cyber Essentials</h2>
+    <a href="index.html">Home</a>
+</div>
+
+
+
+
+
+<!--Main Content-->
+
+
+
+
+
+<div class="container">
+
+    <div class="card">
+        <h1>Your Results</h1>
+        <h2 id="ScoreText"></h2>
+        <p id="Feedback"></p>
+        <p id="RiskLevel"></p>
+    </div>
+
+    <div id="sections"></div>
+
+    <a href="assessment.html" class="btn">Retake Assessment</a>
+
+</div>
+
+
+
+
+<!--Button to download report at the bottom of the page-->
+
+
+
+
+<button onclick="DownloadReport()"class = "btn">
+
+    Download Assessemnt Report
+
+</button>
+
+
+
+
+
+<!-- Script Logic-->
+
+
+
+
+<script>
+
+    /*Loading stored data which saves */
+
+const score = parseInt(localStorage.getItem("score"));
+const answers = JSON.parse(localStorage.getItem("answers"));
+
+document.getElementById("ScoreText").innerText = `Score: ${score}/13`;
+
+
+
+
+
+
+/*Section Risk level & provide Feedback if needed*/
+
+
+
+
+
+    const feedback = document.getElementById("Feedback");
+    const risk = document.getElementById("RiskLevel");
+
+    if (score === 11) { 
+        feedback.innerText = "Strong Security 😁";
+        risk.innerText = "🟢 Risk Level: LOW 🟢";
+}   else if (score >= 6) {
+        feedback.innerText = "Moderate security 🙂";
+        risk.innerText = "🟠 Risk Level: MEDIUM 🟠";
+}   else {
+        feedback.innerText = "Weak security 🥲";
+        risk.innerText = "🔴 Risk Level: HIGH 🔴";
+}
+
+
+
+
+
+/*Generates functions if the section has good or bad security  */
+
+
+
+
+
+
+
+const container = document.getElementById("sections");
+
+function NewSection(title, goodSecurity, steps, idPrefix) {
+    const div = document.createElement("div");
+    div.className = "card";
+
+    let html = `<h2>${title}</h2>`;
+
+    if (goodSecurity) {
+        html += `<p class="good">✔️ Good practice in place</p>`;
+    } else {
+        html += `<p class="bad">✖️ Needs improvement</p>`;/*If section that displays if it needs improvement*/
+        
+        steps.forEach((step, index) => {
+            const id = idPrefix + index; /*Creates unqiue ID for each checkbox*/
+            html += `
+                <div class="step">
+                    <input type="checkbox" class="check-item" id="${id}" onchange="saveChecklist('${id}')">
+                    <label for="${id}">
+                        <strong>${step.title}</strong><br>
+                        ${step.desc}<br>
+                        <em>Example: ${step.example}</em>
+                    </label>
+                </div>
+            `;
+        });
+    }
+
+    div.innerHTML = html;
+    container.appendChild(div);
+}
+
+
+
+
+
+
+
+/*Feedback & example for Self-Assessment */
+
+
+
+
+
+/*User Access Control section */
+
+
+
+
+NewSection(
+    "User Access Control ",
+    answers.q1 === "yes",
+    [
+        {//this will only be displayed if the user selects "no"
+            title: "Individual accounts",
+            desc: "Each employee must have their own individual account",
+            example: "If one employee has more priority than another and they are sharing an account, this will jeopardise important docuemnts or information. "
+        }
+    ],
+    "UAC1"
+);
+
+NewSection(
+    "User Access Control ",
+    answers.q2 === "yes",
+    [
+        {
+            title: "Strong password",
+            desc: "Strong passwords are industry standard",
+            example: "A strong password contains between 12-16 characters, while mixing them with letters, numbers and symbols. E.g. Th1sIs_a_$troGpaSsw0rd "
+        }
+    ],
+    "UAC2"
+);
+
+NewSection(
+    "User Access Control ",
+    answers.q3 === "yes",
+    [
+        {
+            title: "Two-Step-Authentication",
+            desc: "2FA is the future of security as its cost efficient and reliable. ",
+            example: "When an employee is required to sign in (email, teams, etc) they will recieve a message on their phone to confirm is them signing in. "
+        }
+    ],
+    "UAC3"
+);
+
+NewSection(
+    "User Access Control ",
+    answers.q4 === "yes",
+    [
+        {
+            title: "Admin access",
+            desc: "Employee should not have the same access as admins, this is industry standard making sure important data can only be seen by people who are authorised.",
+            example: "If John can access sensitive data it could lead to John whistleblowing or John not having sufficient training to keep the data safe. "
+        }
+    ],
+    "UAC4"
+);
+
+
+
+
+
+
+
+
+
+/*Security in the Real World Section*/
+
+
+
+
+
+
+
+
+NewSection(
+    "Security in the real world",
+    answers.q5 === "yes",
+    [
+        {
+            title: "Devices left unattended",
+            desc: "Very important as devices contain sensitive data which can cause harm to the enterprise if left unsecure.",
+            example: "If John needs the toilet he would have to make sure to lock his desktop/ laptop before leaving his seat. E.g. Windows + L to lock the laptop/ desktop  or Control + Command + Q."
+        }
+    ],
+    "SR1"
+);
+
+NewSection(
+    "Security in the real world",
+    answers.q6 === "yes",
+    [
+        {
+            title: "Employees training for phishing / scamm emails",
+            desc: 'Employees can follow "<a href= "https://www.ncsc.gov.uk/section/respond-recover/phishing" target="_blank">NCSC Phishing Guidance</a> to improve awareness.', 
+            example: "Employees can train in the following link provided above, it will help improve spotting what a some threats may look like."
+        }
+    ],
+    "SR2"
+);
+
+NewSection(
+    "Security in the real world",
+    answers.q7 === "yes",
+    [
+        {
+            title: "Process to report cyber incidents",
+            desc: "This is essential as if your enterprise does get attacked it will need to be record on file and sent to the government website helping them record successfuly the incident that occured.",
+            example: "If your enterprise got attacked via ransomeware then after the incident it will need to be recorded and make sure another ransomware attack does not occur."
+        }
+    ],
+    "SR3"
+);
+
+
+
+
+
+
+
+/*Security on Devices*/
+
+
+
+
+
+
+NewSection(
+    "Security on Devices",
+    answers.q8 === "yes",
+    [
+        {
+            title: "Operating systems must be up to date",
+            desc: "If OS are not up to date it will increase the chances of spyware, ransomeware and other attacks.",
+            example: "Make sure every device is updated as it will make sure all applications when being used are safe for the enterprise."
+        }
+    ],
+    "SD1"
+);
+
+NewSection(
+    "Security on Devices",
+    answers.q9 === "yes",
+    [
+        {
+            title: "Encryption of data",
+            desc: "Laptop and Desktops that belong to the company must be encrypted to ensure that data is kept safe and way from unathorised access.",
+            example: "Make sure that every website visited is HTTPS and use a VPN when sending sensitive information."
+        }
+    ],
+    "SD2"
+);
+
+NewSection(
+    "Security on Devices",
+    answers.q10 === "yes",
+    [
+        {
+            title: "Encryption of data",
+            desc: "This is essential as its important to know who can access USB drives as they can contain viruses or malaware that can infect the network.",
+            example: "Ensuring to have a list of who has permission to contain and use USB drives in the facility."
+        }
+    ],
+    "SD3"
+);
+
+
+
+
+
+
+/*Network Security Section*/
+
+
+
+
+
+
+
+
+NewSection(
+    "Network Security",
+    answers.q11 === "yes",
+    [
+        {
+            title: "Firewall",
+            desc: "For SMEs enabling the firewall across all networks ensures protection if the employee is working in the office, at home or in public WI-FI.",
+            example: "One way to switch on the firewall for windows is by going into settings > Privacy & Security > Windows Security > Firewall & Network Protection (Select each network type) then switch firewall ON."
+        }
+    ],
+    "NS1"
+);
+
+NewSection(
+    "Network Security",
+    answers.q12 === "yes",
+    [
+        {
+            title: "WPA2 & WPA3 encryption",
+            desc: "WIFI Protected Access 2 (WPA2) and WPA3 are security settings that encrypt wireless traffic and help prevent unathorised users ac",
+            example: "Log into your router settings and set wireless security to WPA2-AES or WPA3 instead of the outdated WEP"
+        }
+    ],
+    "NS2"
+);
+
+NewSection(
+    "Network Security",
+    answers.q13 === "yes",
+    [
+        {
+            title: "Separate guest and business devices",
+            desc: "This is important as it makes sure to have another layer of security within the enterprise ",
+            example: "One way to separate this in a friendly and economical way is to have a guest WIFI and another for the enterprise."
+        }
+    ],
+    "NS3"
+);
+
+
+</script>
+
+<script src="script.js"></script>
+</body>
+</html>
