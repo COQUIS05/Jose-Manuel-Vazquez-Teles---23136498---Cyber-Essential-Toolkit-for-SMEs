@@ -114,7 +114,7 @@ function loadChecklist() {
 function checkForSavedData() {
   const score = parseInt(localStorage.getItem("score"));
 
-  if (score !== null) {
+  if (!isNan(score)) {
       document.getElementById("resumeSection").style.display = "block";
 
       let risk = "";
