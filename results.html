@@ -95,7 +95,7 @@ document.getElementById("ScoreText").innerText = `Score: ${score}/13`;
     const feedback = document.getElementById("Feedback");
     const risk = document.getElementById("RiskLevel");
 
-    if (score === 11) { 
+    if (score >= 11) { 
         feedback.innerText = "Strong Security 😁";
         risk.innerText = "🟢 Risk Level: LOW 🟢";
 }   else if (score >= 6) {
