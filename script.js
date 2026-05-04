@@ -112,7 +112,7 @@ function loadChecklist() {
 // Check if previous data exists
 
 function checkForSavedData() {
-  const score = paseInt(localStorage.getItem("score"));
+  const score = parseInt(localStorage.getItem("score"));
 
   if (score !== null) {
       document.getElementById("resumeSection").style.display = "block";
